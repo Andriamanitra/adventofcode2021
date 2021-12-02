@@ -30,7 +30,6 @@ solvePart2 input = solve (0, 0, 0) input
 
 main :: IO()
 main = do
-    contents <- openFile "input.txt" ReadMode >>= hGetContents
-    let input = map readInstruction $ lines contents
+    input <- map readInstruction . lines <$> readFile "input.txt"
     print $ solvePart1 input
     print $ solvePart2 input
