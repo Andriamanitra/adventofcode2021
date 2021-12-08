@@ -7,9 +7,7 @@ SEGMENTS = ?a..?g
 
 def segments_to_digit(segment_str)
     sorted = segment_str.chars.sort.join
-    %w(abcefg cf acdeg acdfg bcdf abdfg abdefg acf abcdefg abcdfg).index{
-        _1 == sorted
-    }
+    %w(abcefg cf acdeg acdfg bcdf abdfg abdefg acf abcdefg abcdfg).index(sorted)
 end
 
 def decode_line(digits, output)
