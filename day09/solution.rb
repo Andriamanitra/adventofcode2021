@@ -8,15 +8,14 @@ low_points = []
 (0...ROWS).each do |r|
     (0...COLS).each do |c|
         val = input[r][c]
-        
+
         neighbors = []
         neighbors << input[r-1][c] if r > 0
         neighbors << input[r+1][c] if r+1 < ROWS
         neighbors << input[r][c-1] if c > 0
         neighbors << input[r][c+1] if c+1 < COLS
-        if val < neighbors.min
-            low_points << [r, c, val]
-        end
+
+        low_points << [r, c, val] if val < neighbors.min
     end
 end
 
@@ -26,9 +25,7 @@ def basin(grid, start)
     visited = {}
     until q.empty?
         r, c = q.pop
-        if grid[r][c] == 9
-            next
-        end
+        next if grid[r][c] == 9
         visited[[r,c]] = true
         q << [r-1, c] if r > 0 && !visited[[r-1,c]]
         q << [r+1, c] if r+1 < ROWS && !visited[[r+1,c]]
