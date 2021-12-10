@@ -1,46 +1,36 @@
 input = File.open("input.txt").readlines
 
-pair = {
-    "(" => ")",
-    "[" => "]",
-    "{" => "}",
-    "<" => ">"
-}
+OPENING = "([{<"
+CLOSING = ")]}>"
+
+class String
+    def find_illegal
+        stack = []
+        illegal = self.each_char.find do |ch|
+            if OPENING[ch]
+                !(stack << ch)
+            elsif CLOSING[ch]
+                ch.tr(CLOSING,OPENING) != stack.pop
+            end
+        end
+        [illegal, stack]
+    end
+end
 
 # Part 1
-values = {")" => 3, "]" => 57, "}" => 1197, ">" => 25137}
-puts input.sum{|line|
-    stack = []
-    illegal = line.each_char.find do |ch|
-        if "[{(<"[ch]
-            stack << ch
-            false
-        elsif "]})>"[ch]
-            ch != pair[stack.pop]
-        end
+scores = input.sum do |line|
+    case line.find_illegal
+    in [nil, _] then 0
+    in [val, _] then [3, 57, 1197, 25137][CLOSING.index(val)]
     end
-    values[illegal] || 0
-}
+end
+puts scores
 
 # Part 2
-values = {")" => 1, "]" => 2, "}" => 3, ">" => 4}
-scores = input.map{|line|
-    stack = []
-    illegal = line.each_char.find do |ch|
-        if "[{(<"[ch]
-            stack << ch
-            false
-        elsif "]})>"[ch]
-            ch != pair[stack.pop]
-        end
+scores = input.filter_map do |line|
+    case line.find_illegal
+    in [nil, stack] then stack.join.reverse.tr(OPENING, "1234").to_i(5)
+    in [val, stack] then nil
     end
-    next 0 if illegal
-    score = 0
-    stack.reverse_each{|x|
-        score *= 5
-        score += values[pair[x]]
-    }
-    score
-}
-scores.reject!(&:zero?)
+end
 puts scores.sort[scores.size / 2]
