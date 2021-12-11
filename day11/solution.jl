@@ -1,8 +1,10 @@
 using DSP # for convolutions
 
+
+const OctopusType = rand((Int, Float32))
 const ENERGY_REQUIRED_TO_FLASH = 10
 const ENERGY_GAIN_PER_STEP = 1
-const FLASH = ones(Int, 3, 3)
+const FLASH = ones(OctopusType, 3, 3)
 
 function read_char_grid(fname::String)
     input = readlines(fname)
@@ -20,7 +22,7 @@ function read_char_grid(fname::String)
     grid
 end
 
-function step(octopi::Matrix{Int})
+function step(octopi::Matrix{T} where T <: Real)
     octopi .+= ENERGY_GAIN_PER_STEP
     flashed = falses(size(octopi))
     flashing = octopi .>= ENERGY_REQUIRED_TO_FLASH
@@ -28,18 +30,18 @@ function step(octopi::Matrix{Int})
         octopi .+= conv(flashing, FLASH)[2:end-1, 2:end-1]
         flashed .|= flashing
         flashing .= octopi .>= ENERGY_REQUIRED_TO_FLASH
-        flashing .-= flashed
+        flashing .&= (flashed .== false)
     end
-    octopi[flashed] .= 0
+    octopi[flashed] .= zero(OctopusType)
     count(flashed)
 end
 
-function part1(octopi::Matrix{Int})
+function part1(octopi::Matrix{T} where T <: Real)
     octopi = copy(octopi)  # we don't want to modify original octopi
     sum(step(octopi) for i=1:100)
 end
 
-function part2(octopi::Matrix{Int})
+function part2(octopi::Matrix{T} where T <: Real)
     octopi = copy(octopi)
     iterations = 1
     while step(octopi) < length(octopi)
@@ -49,7 +51,8 @@ function part2(octopi::Matrix{Int})
 end
 
 function main()
-    octopi = parse.(Int, read_char_grid("input.txt"))
+    input = parse.(Int, read_char_grid("input.txt"))
+    octopi = convert.(OctopusType, input)
     println(part1(octopi))
     println(part2(octopi))
 end
