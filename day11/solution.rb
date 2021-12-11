@@ -8,17 +8,17 @@ ROWS = input.size
 MAXROW = ROWS - 1
 COLS = input[0].size
 MAXCOL = COLS - 1
-input.flatten!
+octopi = input.flatten
 
 flashes = 0
 part1 = nil
 part2 = nil
 (1..).find { |iteration|
-    flashed = input.map { false }
-    input.map! { _1 + ENERGY_GAIN_PER_STEP }
-    while input.zip(flashed).any? { |v,f| v >= ENERGY_REQUIRED_TO_FLASH && !f }
-        input.each_index do |i|
-            next if input[i] < ENERGY_REQUIRED_TO_FLASH || flashed[i]
+    flashed = octopi.map { false }
+    octopi.map! { _1 + ENERGY_GAIN_PER_STEP }
+    while octopi.zip(flashed).any? { |v,f| v >= ENERGY_REQUIRED_TO_FLASH && !f }
+        octopi.each_index do |i|
+            next if octopi[i] < ENERGY_REQUIRED_TO_FLASH || flashed[i]
             flashes += 1
             flashed[i] = true
             row, col = i.divmod(COLS)
@@ -28,12 +28,12 @@ part2 = nil
             col_to = [MAXCOL, col + FLASH_RANGE].min
             (col_from..col_to).each do |col|
                 (row_from..row_to).each do |row|
-                    input[row * COLS + col] += FLASH_STRENGTH
+                    octopi[row * COLS + col] += FLASH_STRENGTH
                 end
             end
         end
     end
-    input.map!{_1 >= ENERGY_REQUIRED_TO_FLASH ? 0 : _1}
+    octopi.map!{_1 >= ENERGY_REQUIRED_TO_FLASH ? 0 : _1}
     part1 = flashes if part1.nil? && iteration == 100
     part2 = iteration if part2.nil? && flashed.all?
     part1 && part2
