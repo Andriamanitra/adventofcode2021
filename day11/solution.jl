@@ -29,20 +29,18 @@ function step(octopi::Matrix{T} where T <: Real)
     while any(flashing)
         octopi .+= conv(flashing, FLASH)[2:end-1, 2:end-1]
         flashed .|= flashing
-        flashing .= octopi .>= ENERGY_REQUIRED_TO_FLASH
-        flashing .&= (flashed .== false)
+        @. flashing = octopi >= ENERGY_REQUIRED_TO_FLASH
+        @. flashing &= !flashed
     end
     octopi[flashed] .= zero(OctopusType)
     count(flashed)
 end
 
 function part1(octopi::Matrix{T} where T <: Real)
-    octopi = copy(octopi)  # we don't want to modify original octopi
     sum(step(octopi) for i=1:100)
 end
 
 function part2(octopi::Matrix{T} where T <: Real)
-    octopi = copy(octopi)
     iterations = 1
     while step(octopi) < length(octopi)
         iterations += 1
@@ -53,8 +51,8 @@ end
 function main()
     input = parse.(Int, read_char_grid("input.txt"))
     octopi = convert.(OctopusType, input)
-    println(part1(octopi))
-    println(part2(octopi))
+    octopi |> copy |> part1 |> println
+    octopi |> copy |> part2 |> println
 end
 
 main()
