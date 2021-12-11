@@ -32,7 +32,7 @@ function step(octopi::Matrix{T} where T <: Real)
         @. flashing = octopi >= ENERGY_REQUIRED_TO_FLASH
         @. flashing &= !flashed
     end
-    octopi[flashed] .= zero(OctopusType)
+    octopi[flashed] .= zero(eltype(octopi))
     count(flashed)
 end
 
