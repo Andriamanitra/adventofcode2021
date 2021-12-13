@@ -7,8 +7,8 @@ class Paper
 
   def initialize(points)
     @points = points
-    @width  = points.map { |x, _y| x }.max + 1
-    @height = points.map { |_x, y| y }.max + 1
+    @width  = points.map { |x, _| x }.max + 1
+    @height = points.map { |_, y| y }.max + 1
   end
 
   def vertical_fold!(fold)
@@ -43,7 +43,7 @@ paper = Paper.new(points)
 instructions.each_line.zip(1..) do |instruction, fold_number|
   raise 'Invalid instruction!' unless instruction[/fold along (x|y)=(\d+)/]
 
-  case $1 
+  case $1
   when 'x' then paper.vertical_fold!($2.to_i)
   when 'y' then paper.horizontal_fold!($2.to_i)
   end
