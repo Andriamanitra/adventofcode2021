@@ -43,10 +43,9 @@ paper = Paper.new(points)
 instructions.each_line.zip(1..) do |instruction, fold_number|
   raise 'Invalid instruction!' unless instruction[/fold along (x|y)=(\d+)/]
 
-  if $1 == 'x'
-    paper.vertical_fold!($2.to_i)
-  elsif $1 == 'y'
-    paper.horizontal_fold!($2.to_i)
+  case $1 
+  when 'x' then paper.vertical_fold!($2.to_i)
+  when 'y' then paper.horizontal_fold!($2.to_i)
   end
   # Part 1
   puts paper.points.size if fold_number == 1
