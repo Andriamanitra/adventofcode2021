@@ -12,20 +12,20 @@ class Paper
   end
 
   def vertical_fold!(fold)
-    @points = @points.map do |x, y|
+    @points.map! do |x, y|
       x = fold - (x - fold) if x > fold
       [x, y]
     end
-    @points = @points.uniq
+    @points.uniq!
     @width = fold
   end
 
   def horizontal_fold!(fold)
-    @points = @points.map do |x, y|
+    @points.map! do |x, y|
       y = fold - (y - fold) if y > fold
       [x, y]
     end
-    @points = @points.uniq
+    @points.uniq!
     @height = fold
   end
 
