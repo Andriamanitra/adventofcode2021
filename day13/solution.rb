@@ -11,7 +11,7 @@ class Paper
     @height = points.map { |_x, y| y }.max + 1
   end
 
-  def foldX(fold)
+  def vertical_fold!(fold)
     @points = @points.map do |x, y|
       x = fold - (x - fold) if x > fold
       [x, y]
@@ -20,7 +20,7 @@ class Paper
     @width = fold
   end
 
-  def foldY(fold)
+  def horizontal_fold!(fold)
     @points = @points.map do |x, y|
       y = fold - (y - fold) if y > fold
       [x, y]
@@ -44,9 +44,9 @@ instructions.each_line.zip(1..) do |instruction, fold_number|
   raise 'Invalid instruction!' unless instruction[/fold along (x|y)=(\d+)/]
 
   if $1 == 'x'
-    paper.foldX($2.to_i)
+    paper.vertical_fold!($2.to_i)
   elsif $1 == 'y'
-    paper.foldY($2.to_i)
+    paper.horizontal_fold!($2.to_i)
   end
   # Part 1
   puts paper.points.size if fold_number == 1
